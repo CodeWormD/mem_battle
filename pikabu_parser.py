@@ -63,7 +63,7 @@ for i in range(75):
 
 
 
-
+#new
 # добавить проверку уникальности картинки по url
 # спарсить несколько картинок
 #<section class="stories-feed__message" style="display: block;">Отличная работа, все прочитано!</section>
