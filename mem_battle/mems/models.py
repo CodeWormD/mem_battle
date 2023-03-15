@@ -9,6 +9,9 @@ class Mem(models.Model):
     upload_data = models.DateTimeField('Дата добавления', auto_now_add=True)
 
 
+    def __str__(self):
+        return f'Картинка {self.id} - {self.upload_data}'
+
     class Meta:
         verbose_name = 'Мем'
         verbose_name_plural = 'Мемы'

@@ -8,6 +8,10 @@ import requests
 import shutil
 
 
+from mems.models import Mem
+
+
+
 
 def load_browser(url):
 
@@ -56,7 +60,8 @@ def parse_pikabu(driver):
                     if name_for_check not in list_check:
                         with open(f'images/{name}.png', 'wb') as f:
                             image = requests.get(p, stream=True)
-                            shutil.copyfileobj(image.raw, f)
+                            Mem.objects.create(image=image)
+                            # shutil.copyfileobj(image.raw, f)
 
                             print(f'Картинка {count_images}, {name}.png скачалась')
                             count_images +=1
