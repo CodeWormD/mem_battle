@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'apps.mems.apps.MemsConfig',
     'apps.users.apps.UsersConfig',
     'apps.reports.apps.ReportsConfig',
+    'apps.cores.apps.CoresConfig',
 ]
 
 
