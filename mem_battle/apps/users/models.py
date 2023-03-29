@@ -1,29 +1,13 @@
 import uuid
 
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 
-from apps.cores.models import TimestampsBaseMixin
+from apps.cores.mixins import TimestampsBaseMixin
 
 
-class Social(models.Model):
-    class SocialNetworks:
-        VK = 'VK'
-        Telegram = 'Telegram'
-        USER_SOCIALS =(
-            (VK, 'VK'),
-            (Telegram, 'Telegram')
-        )
-
-    name = models.CharField(
-        choices=SocialNetworks.USER_SOCIALS,
-        max_length=20,
-        unique=True
-    )
-    link = models.URLField(
-        max_length=355,
-        unique=True
-    )
+User = settings.AUTH_USER_MODEL
 
 
 class User(AbstractUser, TimestampsBaseMixin):
@@ -47,11 +31,6 @@ class User(AbstractUser, TimestampsBaseMixin):
     is_active = models.BooleanField(
         default=False
     )
-    social = models.ForeignKey(
-        Social,
-        related_name='users',
-        on_delete=models.CASCADE,
-    )
     follower = models.ManyToManyField(
         'self',
         symmetrical=False,
@@ -64,8 +43,44 @@ class User(AbstractUser, TimestampsBaseMixin):
         verbose_name = 'User',
         verbose_name_plural ='Users',
 
+    # def get_absolute_url(self):
+        # return reverse("model_detail", kwargs={"pk": self.pk})
+
     def __str__(self):
-        return self.email
+        return self.username
+
+
+class Social(models.Model):
+    class SocialNetworks:
+        VK = 'VK'
+        Telegram = 'Telegram'
+        USER_SOCIALS =(
+            (VK, 'VK'),
+            (Telegram, 'Telegram')
+        )
+    name = models.CharField(
+        choices=SocialNetworks.USER_SOCIALS,
+        max_length=20,
+        unique=True
+    )
+    user = models.ForeignKey(
+        User,
+        related_name='socials',
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE
+    )
+    link = models.URLField(
+        max_length=355,
+        unique=True
+    )
+
+    class Mets:
+        verbose_name = 'Социальная сеть',
+        verbose_name_plural ='Социальные сети',
+
+    def __str__(self):
+        return f'{self.user} добавил социальную сеть {self.name}'
 
 
 class Follower(models.Model):
@@ -79,6 +94,10 @@ class Follower(models.Model):
         related_name='receiver',
         on_delete=models.CASCADE
     )
+
+    class Mets:
+        verbose_name = 'Подписчик',
+        verbose_name_plural ='Подписчики',
 
     def __str__(self):
         return f'{self.sender} подписался на {self.reciever}'
