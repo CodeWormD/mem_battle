@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import User, Social, Follower
+
+from .models import Follower, Social, User
 
 
 @admin.register(User)
@@ -13,6 +14,7 @@ class UserAdmin(admin.ModelAdmin):
                 "fields": (
                     "is_active",
                     "is_staff",
+                    "is_verified",
                     "is_superuser",
                     "groups",
                     "user_permissions",

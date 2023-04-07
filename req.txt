@@ -25,3 +25,5 @@ trio==0.22.0
 trio-websocket==0.9.2
 urllib3==1.26.15
 wsproto==1.2.0
+djangorestframework-simplejwt==5.2.2
+django-cors-headers-3.14.0

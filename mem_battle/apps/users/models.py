@@ -1,13 +1,39 @@
 import uuid
 
-from django.db import models
 from django.conf import settings
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.db import models
 
 from apps.cores.mixins import TimestampsBaseMixin
 
-
 User = settings.AUTH_USER_MODEL
+
+
+
+class UserManager(BaseUserManager):
+
+    def create_user(self, username, email, password=None):
+        if username is None:
+            raise TypeError('Users should have a username')
+        if email is None:
+            raise TypeError('Users should have a Email')
+
+        user = self.model(username=username, email=self.normalize_email(email))
+        user.set_password(password)
+        user.save()
+        return user
+
+    def create_superuser(self, username, email, password=None):
+        if password is None:
+            raise TypeError('Password should not be none')
+
+        user = self.create_user(username, email, password)
+        user.is_superuser = True
+        user.is_staff = True
+        user.save()
+        return user
+
 
 
 class User(AbstractUser, TimestampsBaseMixin):
@@ -28,7 +54,7 @@ class User(AbstractUser, TimestampsBaseMixin):
         max_length=254,
         unique=True
     )
-    is_active = models.BooleanField(
+    is_verified = models.BooleanField(
         default=False
     )
     follower = models.ManyToManyField(
@@ -38,16 +64,20 @@ class User(AbstractUser, TimestampsBaseMixin):
         through_fields=('sender', 'receiver')
     )
 
+    objects = UserManager()
+
     class Mets:
         db_table = 'User',
         verbose_name = 'User',
         verbose_name_plural ='Users',
 
-    # def get_absolute_url(self):
-        # return reverse("model_detail", kwargs={"pk": self.pk})
-
     def __str__(self):
         return self.username
+
+    def save(self, *args, **kwargs):
+        self.password = make_password(self.password)
+        super(User, self).save(*args, **kwargs)
+
 
 
 class Social(models.Model):

@@ -1,15 +1,15 @@
 import uuid
-from django.db import models
+
 from django.conf import settings
+from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
+from django.template.defaultfilters import slugify
 # from django.urls import reverse
 from django.utils.text import slugify
-from django.dispatch import receiver
-from django.db.models.signals import pre_save
-from django.template.defaultfilters import slugify
 
-from utils.mem_path_save import user_directory_path
 from apps.cores.mixins import LikeDislikeTimeMixin
-
+from utils.mem_path_save import user_directory_path
 
 User = settings.AUTH_USER_MODEL
 

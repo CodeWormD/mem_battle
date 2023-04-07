@@ -1,8 +1,8 @@
 from django.contrib import admin
 
-from .models import Mem, Tag, Comment, Group
 from apps.users.models import User
 
+from .models import Comment, Group, Mem, Tag
 
 
 @admin.register(Mem)

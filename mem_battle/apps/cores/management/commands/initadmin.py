@@ -14,7 +14,7 @@ class Command(BaseCommand):
                 first_name="admin",
                 last_name="admin",
                 password="admin",
-                is_active=True
+                is_verified=True
             )
         else:
             print("Admin already initialized")
