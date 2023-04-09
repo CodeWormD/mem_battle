@@ -15,10 +15,6 @@ from apps.users.models import User
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(
-        required=True,
-        max_length=50
-    )
     password = serializers.CharField(
         required=True,
         write_only=True,

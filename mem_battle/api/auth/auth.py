@@ -87,7 +87,6 @@ def user_confirm_code(request):
         )
 
 
-
 @api_view(['POST'])
 def user_reset_password(request):
     serializer = UserRestPasswordSerializer(data=request.data)
