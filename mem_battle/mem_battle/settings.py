@@ -11,6 +11,12 @@ SECRET_KEY = 'django-insecure-a4zz8s^j&4(h-+p9quk7pklqizm@j2!2m*h(!6!0ux78-klg3e
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
+
+
 ALLOWED_HOSTS = []
 
 
@@ -28,6 +34,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'django_filters',
+    "debug_toolbar",
 
     'apps.mems.apps.MemsConfig',
     'apps.users.apps.UsersConfig',
@@ -44,6 +51,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+
 ]
 
 ROOT_URLCONF = 'mem_battle.urls'
@@ -101,15 +110,18 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 REST_FRAMEWORK = {
+    'DATETIME_FORMAT': "%Y-%m-%d %H:%M",
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
-
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
 }
 
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=120),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
@@ -151,5 +163,5 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+BAD_TAGS = ['.', '', '!', '*']
 AUTH_USER_MODEL = 'users.User'

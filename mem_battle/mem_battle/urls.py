@@ -1,7 +1,10 @@
 from django.contrib import admin
 from django.urls import include, path
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', include('api.auth.urls'))
+    path('api/', include('api.auth.urls')),
+    path('api/', include('api.v1.urls')),
+    path('debug/', include('debug_toolbar.urls')),
 ]

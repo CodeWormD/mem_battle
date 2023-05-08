@@ -47,6 +47,9 @@ class Group(models.Model):
         verbose_name = 'Группа'
         verbose_name_plural = 'Группы'
 
+    def __str__(self):
+        return self.name
+
     # def get_absolute_url(self):
         # return reverse("model_detail", kwargs={"pk": self.pk})
 
@@ -114,6 +117,9 @@ class Mem(LikeDislikeTimeMixin):
 
     def __str__(self):
         return f'{self.id}'
+
+    def count_likes(self):
+        return self.likes.count()
 
 
 class Comment(LikeDislikeTimeMixin):

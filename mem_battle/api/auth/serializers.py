@@ -1,15 +1,4 @@
-from django.conf import settings
-from django.contrib.auth.hashers import make_password
-from django.contrib.auth.password_validation import validate_password
-
-from django.shortcuts import get_object_or_404
-from django.urls import reverse
-from django.utils.encoding import (DjangoUnicodeDecodeError, force_str,
-                                   smart_str)
-from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
 from rest_framework import serializers
-from rest_framework.response import Response
-from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.tokens import RefreshToken
 from apps.users.models import User
 
