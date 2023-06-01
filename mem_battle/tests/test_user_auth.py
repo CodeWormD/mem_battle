@@ -1,6 +1,7 @@
 import pytest
 from django import urls
 from django.core import mail
+
 from apps.users.models import User
 
 

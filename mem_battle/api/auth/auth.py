@@ -1,28 +1,28 @@
 import jwt
 from django.conf import settings
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils.encoding import (DjangoUnicodeDecodeError, smart_bytes,
                                    smart_str)
 from django.utils.http import urlsafe_base64_decode, urlsafe_base64_encode
-from rest_framework import permissions, status, viewsets
-from rest_framework.decorators import action, api_view, permission_classes
-from rest_framework.exceptions import AuthenticationFailed
+from rest_framework import permissions, status
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 from apps.cores.exceptions import (MailSendingException, UserAlreadyVerified,
                                    UserDoesNotExist)
+from apps.cores.validators import validate_token_user
 from apps.users.models import User
 from utils.email_body import confirm_mail, reset_password_email
 
-from .serializers import (SetNewPasswordSerializer, UserRegistrationSerializer,
-                          UserRestPasswordSerializer, UserLogoutSerializer)
-from apps.cores.validators import validate_token_user
+from .serializers import (SetNewPasswordSerializer, UserLogoutSerializer,
+                          UserRegistrationSerializer,
+                          UserRestPasswordSerializer)
 
 
 @api_view(['POST'])
+@permission_classes([permissions.AllowAny])
 def user_registration(request):
     serializer = UserRegistrationSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -52,6 +52,7 @@ def user_registration(request):
 
 
 @api_view(['GET'])
+@permission_classes([permissions.AllowAny])
 def user_confirm_code(request):
     token = request.GET.get('token')
 
@@ -88,6 +89,7 @@ def user_confirm_code(request):
 
 
 @api_view(['POST'])
+@permission_classes([permissions.AllowAny])
 def user_reset_password(request):
     serializer = UserRestPasswordSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -117,6 +119,7 @@ def user_reset_password(request):
 
 
 @api_view(['GET'])
+@permission_classes([permissions.AllowAny])
 def user_reset_verify(request, uidb64, token):
     try:
         id = smart_str(urlsafe_base64_decode(uidb64))
@@ -143,6 +146,7 @@ def user_reset_verify(request, uidb64, token):
 
 
 @api_view(['PATCH'])
+@permission_classes([permissions.AllowAny])
 def user_reset_complete(request):
     user = request.data.get('uidb64')
     token = request.data.get('token')
@@ -162,6 +166,7 @@ def user_reset_complete(request):
 
 
 @api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
 def user_logout(request):
     serializer = UserLogoutSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)

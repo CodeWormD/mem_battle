@@ -40,11 +40,16 @@ class MemAdmin(admin.ModelAdmin):
 class TagAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("name",)}
     list_display = (
+        'id',
         'name',
         'slug',
+        'tags_with_mems_count'
     )
     list_filter = (
         'name', 'slug',)
+
+    def tags_with_mems_count(self, obj):
+        return obj.mems.count()
 
 
 @admin.register(Comment)

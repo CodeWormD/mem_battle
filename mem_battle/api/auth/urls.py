@@ -2,8 +2,8 @@ from django.urls import include, path
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView)
 
-from .auth import (user_confirm_code, user_registration, user_reset_complete,
-                   user_reset_password, user_reset_verify, user_logout)
+from .auth import (user_confirm_code, user_logout, user_registration,
+                   user_reset_complete, user_reset_password, user_reset_verify)
 
 urlpatterns = [
     path('auth/signup/', user_registration, name='signup'),

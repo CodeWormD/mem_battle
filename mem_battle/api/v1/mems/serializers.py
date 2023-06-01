@@ -1,10 +1,10 @@
-from rest_framework import serializers
-from apps.mems.models import Mem, Comment, Tag
-from django.utils import timezone
 from django.conf import settings
-from django.utils.text import slugify
+from rest_framework import serializers
 
-class CommentMemSerializer(serializers.ModelSerializer):
+from apps.mems.models import Comment, Mem, Tag
+
+
+class CommentSerializer(serializers.ModelSerializer):
     owner = serializers.SlugRelatedField(
         read_only=True,
         slug_field="username"
@@ -16,13 +16,12 @@ class CommentMemSerializer(serializers.ModelSerializer):
         fields = ('id', 'owner', 'text', 'parent')
 
 
-
 class MemsListSerializer(serializers.ModelSerializer):
     owner = serializers.SlugRelatedField(
         read_only=True,
         slug_field="username"
     )
-    groups = serializers.SlugRelatedField(
+    tags = serializers.SlugRelatedField(
         many=True,
         read_only=True,
         slug_field="name"
@@ -30,6 +29,7 @@ class MemsListSerializer(serializers.ModelSerializer):
     likes_count = serializers.SerializerMethodField()
     dislikes_count = serializers.SerializerMethodField()
     comments_count = serializers.SerializerMethodField()
+
 
     def get_likes_count(self, obj):
         return obj.likes_count
@@ -50,7 +50,7 @@ class MemsListSerializer(serializers.ModelSerializer):
             'comments_count',
             'likes_count',
             'dislikes_count',
-            'groups'
+            'tags',
         )
 
 
@@ -58,11 +58,6 @@ class MemRetriveSerializer(serializers.ModelSerializer):
     owner = serializers.SlugRelatedField(
         read_only=True,
         slug_field="username"
-    )
-    groups = serializers.SlugRelatedField(
-        many=True,
-        read_only=True,
-        slug_field="name"
     )
     tags = serializers.SlugRelatedField(
         many=True,
@@ -87,7 +82,6 @@ class MemRetriveSerializer(serializers.ModelSerializer):
             'image',
             'owner',
             'created_at',
-            'groups',
             'tags',
             'likes',
             'dislikes',
@@ -124,12 +118,8 @@ class MemCreateUpdateSerializer(serializers.ModelSerializer):
             return t
 
     def create(self, validated_data):
-        print(self.__dict__)
-        print(validated_data)
         tags = validated_data.pop('tags')
-        print(f'TAGGGGGGGGS - {tags}')
         list_tags = self.make_tags_list(tags)
-        print(list_tags)
         mem = Mem.objects.create(**validated_data)
         for tag in list_tags:
             t = self.get_or_create_tag(tag)
@@ -151,3 +141,4 @@ class MemDeleteSerializer(serializers.ModelSerializer):
     class Meta:
         model = Mem
         fields = ('id',)
+

@@ -8,6 +8,8 @@ def user_superuser(django_user_model):
         email='testsuperuser@bk.fake',
         password='1234567',
         is_verified=True,
+        is_staff = True,
+        is_superuser = True
     )
 
 @pytest.fixture

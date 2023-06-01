@@ -2,9 +2,9 @@ import uuid
 
 from django.conf import settings
 from django.db import models
-
-from rest_framework import viewsets, mixins
-
+from django.shortcuts import get_object_or_404
+from rest_framework import generics, mixins, status, viewsets
+from rest_framework.response import Response
 
 User = settings.AUTH_USER_MODEL
 
@@ -65,6 +65,7 @@ class LikeDislikeTimeMixin(
 
 
 class BaseModelViewSet(viewsets.GenericViewSet):
+    action_serializer_classes = None
 
     def get_serializer_class(self):
         return self.action_serializer_classes.get(self.action)
@@ -77,3 +78,55 @@ class MemModelViewSet(mixins.RetrieveModelMixin,
                       mixins.DestroyModelMixin,
                       BaseModelViewSet):
     pass
+
+
+class TagModelViewSet(mixins.RetrieveModelMixin,
+                      mixins.ListModelMixin,
+                      BaseModelViewSet):
+    pass
+
+
+class CommentCreateUpdateDestroyAPIView(mixins.CreateModelMixin,
+                                        mixins.UpdateModelMixin,
+                                        mixins.DestroyModelMixin,
+                                        generics.GenericAPIView):
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def put(self, request, *args, **kwargs):
+        return self.update(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+
+class CommentListCreateAPIView(mixins.ListModelMixin,
+                               mixins.CreateModelMixin,
+                               generics.GenericAPIView):
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+
+class LikeDislikeAPIView(mixins.CreateModelMixin,
+                       mixins.DestroyModelMixin,
+                       generics.GenericAPIView):
+
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+    def get_object(self, obj):
+        if 'comment_id' not in self.kwargs:
+            mem = get_object_or_404(obj, id=self.kwargs['mem_id'])
+            self.check_object_permissions(self.request, mem)
+            return mem
+        comment = get_object_or_404(obj, id=self.kwargs['comment_id'])
+        self.check_object_permissions(self.request, comment)
+        return comment

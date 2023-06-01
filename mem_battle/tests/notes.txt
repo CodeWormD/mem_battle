@@ -1,0 +1,3 @@
+Image test
+
+https://stackoverflow.com/questions/26298821/django-testing-model-with-imagefield

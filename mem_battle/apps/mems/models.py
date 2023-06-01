@@ -14,7 +14,6 @@ from utils.mem_path_save import user_directory_path
 User = settings.AUTH_USER_MODEL
 
 
-
 class Group(models.Model):
     id = models.UUIDField(
         default=uuid.uuid4,
@@ -114,6 +113,7 @@ class Mem(LikeDislikeTimeMixin):
     class Meta:
         verbose_name = 'Мем'
         verbose_name_plural = 'Мемы'
+        # ordering = ('tags',)
 
     def __str__(self):
         return f'{self.id}'
@@ -138,7 +138,7 @@ class Comment(LikeDislikeTimeMixin):
         'self',
         null=True,
         blank=True,
-        on_delete=models.CASCADE,
+        on_delete=models.CASCADE, # change on PROTECT
         related_name='threads'
     )
 
@@ -148,3 +148,6 @@ class Comment(LikeDislikeTimeMixin):
 
     def __str__(self):
         return f'{self.id}'
+
+    def children(self):
+        return Comment.objects.filter(parent=self)
