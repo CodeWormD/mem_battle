@@ -51,7 +51,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'mem_battle.middleware.session_mem_id',
     "debug_toolbar.middleware.DebugToolbarMiddleware",
+
 
 ]
 
@@ -153,6 +155,8 @@ TIME_ZONE = 'Europe/Moscow'
 USE_I18N = True
 
 USE_TZ = True
+
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 360
 
 
 # Static files (CSS, JavaScript, Images)

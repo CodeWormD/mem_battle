@@ -34,3 +34,20 @@ class CommentListDoesNotExists(CommentDoesNotExist):
 
 class TagDoesNotExist(CommentDoesNotExist):
     default_detail = ('Tag does not exist.')
+
+
+class BattleForMemsEnd(APIException):
+    status_code = status.HTTP_204_NO_CONTENT
+    default_detail = ('BattleForMemsEnd. You have battled all mems')
+    default_code = 'no_content'
+
+
+class QuersetBattleError(APIException):
+    status_code = status.HTTP_404_NOT_FOUND
+    default_detail = ('QuersetBattleError. Smth wrong with mem battle get_queryset')
+    default_code = 'not_found'
+
+class QuerysetError(APIException):
+    status_code = status.HTTP_204_NO_CONTENT
+    default_detail = ('QuerySetError in get_random_mems or maybe you have seen all mems')
+    default_code = 'no_content'

@@ -1,7 +1,9 @@
 import uuid
-
+import random
+# from numpy import random
 from django.conf import settings
 from django.db import models
+from django.db.models.aggregates import Count
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.template.defaultfilters import slugify
@@ -84,7 +86,17 @@ class Tag(models.Model):
         super(Tag, self).save(*args, **kwargs)
 
 
+class MemBattleManager(models.Manager):
+
+    def random(self):
+        count = self.values_list('id', flat=True)
+        rand = random.choices(count, k=2)
+        print(rand)
+        return self.select_related('owner').filter(pk__in=rand)
+
+
 class Mem(LikeDislikeTimeMixin):
+    objects = MemBattleManager()
     image = models.ImageField(
         'Изображение',
         upload_to=user_directory_path
@@ -96,9 +108,9 @@ class Mem(LikeDislikeTimeMixin):
         null=True,
         on_delete=models.SET_NULL
     )
-    vote_score = models.IntegerField(
+    vote_score = models.PositiveIntegerField(
         default=0
-    )
+    ) ## change to positiveinteger
     tags = models.ManyToManyField(
         Tag,
         blank=True,
@@ -109,6 +121,7 @@ class Mem(LikeDislikeTimeMixin):
         blank=True,
         related_name='mems_group'
     )
+
 
     class Meta:
         verbose_name = 'Мем'
@@ -138,7 +151,7 @@ class Comment(LikeDislikeTimeMixin):
         'self',
         null=True,
         blank=True,
-        on_delete=models.CASCADE, # change on PROTECT
+        on_delete=models.SET_NULL, # comment should stay in thread
         related_name='threads'
     )
 

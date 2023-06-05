@@ -5,11 +5,13 @@ from .comments import views
 from .groups import views as group_view
 from .mems import views as mem_view
 from .tags import views as tag_view
+from .battle import views as battle_view
 
 router = DefaultRouter()
 router.register('mems', mem_view.MemsViewSet, basename='mems')
 router.register('groups', group_view.GroupModelViewSet, basename='groups')
 router.register('tags', tag_view.TagViewSet, basename='tags')
+router.register('battle', battle_view.MemBattleViewSet, basename='battle')
 
 
 urlpatterns = [
