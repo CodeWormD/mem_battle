@@ -85,7 +85,8 @@ class CommentCUDAPIView(CommentCreateUpdateDestroyAPIView):
         except Comment.DoesNotExist:
             raise CommentDoesNotExist
         self.check_object_permissions(self.request, comment)
-        comment.delete()
+        comment.text = 'Comment deleted'
+        comment.save()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def create(self, request, *args, **kwargs):
