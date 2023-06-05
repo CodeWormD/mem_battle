@@ -154,6 +154,7 @@ class Comment(LikeDislikeTimeMixin):
         on_delete=models.SET_NULL, # comment should stay in thread
         related_name='threads'
     )
+    deleted = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'Комментарий'

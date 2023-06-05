@@ -32,6 +32,10 @@ class CommentListDoesNotExists(CommentDoesNotExist):
     default_detail = ('Can not get list of comments')
 
 
+class CommentHasBeenDeleted(CommentDoesNotExist):
+    default_detail = ('Comment deleted. You can not update it')
+
+
 class TagDoesNotExist(CommentDoesNotExist):
     default_detail = ('Tag does not exist.')
 

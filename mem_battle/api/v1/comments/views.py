@@ -6,7 +6,8 @@ from rest_framework.permissions import (IsAuthenticated,
 from rest_framework.response import Response
 
 from apps.cores.exceptions import (CommentDoesNotExist,
-                                   CommentListDoesNotExists, MemDoesNotExist)
+                                   CommentListDoesNotExists, MemDoesNotExist,
+                                   CommentHasBeenDeleted)
 from apps.cores.mixins import (CommentCreateUpdateDestroyAPIView,
                                CommentListCreateAPIView, LikeDislikeAPIView)
 from apps.cores.permissions import IsOwnerOrReadOnly
@@ -77,6 +78,8 @@ class CommentCUDAPIView(CommentCreateUpdateDestroyAPIView):
     def get_object(self):
         comment_id = self.kwargs.get('comment_id')
         instance = Comment.objects.get(id=comment_id)
+        if instance.deleted == True:
+            raise CommentHasBeenDeleted
         return instance
 
     def destroy(self, request, *args, **kwargs):
@@ -86,8 +89,9 @@ class CommentCUDAPIView(CommentCreateUpdateDestroyAPIView):
             raise CommentDoesNotExist
         self.check_object_permissions(self.request, comment)
         comment.text = 'Comment deleted'
+        comment.deleted = True
         comment.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_200_OK)
 
     def create(self, request, *args, **kwargs):
         try:
