@@ -30,7 +30,6 @@ class MemsListSerializer(serializers.ModelSerializer):
     dislikes_count = serializers.SerializerMethodField()
     comments_count = serializers.SerializerMethodField()
 
-
     def get_likes_count(self, obj):
         return obj.likes_count
 
@@ -39,6 +38,7 @@ class MemsListSerializer(serializers.ModelSerializer):
 
     def get_comments_count(self, obj):
         return obj.com_count
+
 
     class Meta:
         model = Mem
@@ -50,6 +50,7 @@ class MemsListSerializer(serializers.ModelSerializer):
             'comments_count',
             'likes_count',
             'dislikes_count',
+            'vote_score',
             'tags',
         )
 

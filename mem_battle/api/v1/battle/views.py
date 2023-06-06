@@ -9,7 +9,7 @@ from apps.cores.exceptions import (BattleForMemsEnd, QuersetBattleError,
                                    QuerysetError)
 from apps.mems.models import Mem
 from .serializers import MemsBattleListSerializer
-
+from django.db.models import Count
 
 class MemBattleViewSet(ReadOnlyModelViewSet):
     serializer_class = MemsBattleListSerializer
@@ -21,7 +21,9 @@ class MemBattleViewSet(ReadOnlyModelViewSet):
         """Exclude mems user has already seen"""
         try:
             ls = self.request.session['mem_seen']
-            queryset = Mem.objects.values_list('id', flat=True).exclude(pk__in=ls)
+            queryset = (Mem.objects.values_list('id', flat=True)
+                        .exclude(pk__in=ls)
+                    )
             return queryset
         except Mem.DoesNotExist:
             raise QuersetBattleError

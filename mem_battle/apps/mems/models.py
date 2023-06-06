@@ -110,7 +110,7 @@ class Mem(LikeDislikeTimeMixin):
     )
     vote_score = models.PositiveIntegerField(
         default=0
-    ) ## change to positiveinteger
+    )
     tags = models.ManyToManyField(
         Tag,
         blank=True,

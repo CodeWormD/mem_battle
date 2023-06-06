@@ -23,7 +23,7 @@ class MemsViewSet(MemModelViewSet):
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     filterset_class = MemFilter
     search_fields = ['^tags__name']
-    ordering_fields = ['created_at']
+    ordering_fields = ['created_at', 'likes_count', 'vote_score']
 
     action_serializer_classes = {
         'retrieve': MemRetriveSerializer,
@@ -37,7 +37,7 @@ class MemsViewSet(MemModelViewSet):
         queryset = (
             Mem.objects
             .select_related('owner')
-            .only('owner__username', 'image', 'id', 'created_at')
+            .only('owner__username', 'image', 'id', 'created_at', 'vote_score')
             .prefetch_related(
                 Prefetch(
                     'tags',
@@ -47,7 +47,7 @@ class MemsViewSet(MemModelViewSet):
             .annotate(likes_count=Count('likes', distinct=True),
                     dislikes_count=Count('dislikes', distinct=True),
                     com_count=Count('comments', distinct=True)
-                    ) # закешировать кол-во
+                    )
         )
         return queryset
 
