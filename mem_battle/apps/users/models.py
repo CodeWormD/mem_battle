@@ -10,7 +10,6 @@ from apps.cores.mixins import TimestampsBaseMixin
 User = settings.AUTH_USER_MODEL
 
 
-
 class UserManager(BaseUserManager):
 
     def create_user(self, username, email, password=None):
@@ -34,7 +33,6 @@ class UserManager(BaseUserManager):
         user.is_verified = True
         user.save()
         return user
-
 
 
 class User(AbstractUser, TimestampsBaseMixin):
@@ -62,6 +60,7 @@ class User(AbstractUser, TimestampsBaseMixin):
         'self',
         symmetrical=False,
         through='Follower',
+        related_name='followed_by',
         through_fields=('sender', 'receiver')
     )
 
@@ -78,7 +77,6 @@ class User(AbstractUser, TimestampsBaseMixin):
     def save(self, *args, **kwargs):
         self.password = make_password(self.password)
         super(User, self).save(*args, **kwargs)
-
 
 
 class Social(models.Model):
@@ -110,8 +108,8 @@ class Social(models.Model):
         verbose_name = 'Социальная сеть',
         verbose_name_plural ='Социальные сети',
 
-    def __str__(self):
-        return f'{self.user} добавил социальную сеть {self.name}'
+    # def __str__(self):
+    #     return f'{self.user} добавил социальную сеть {self.name}'
 
 
 class Follower(models.Model):
@@ -130,7 +128,22 @@ class Follower(models.Model):
         verbose_name = 'Подписчик',
         verbose_name_plural ='Подписчики',
 
-    def __str__(self):
-        return f'{self.sender} подписался на {self.reciever}'
+    # def __str__(self):
+    #     return f'{self.sender} подписался на {self.reciever}'
 
 
+class Profile(models.Model):
+    id = models.UUIDField(
+        default=uuid.uuid4,
+        editable=False,
+        primary_key=True
+    )
+    owner = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name='profile'
+    )
+
+    class Mets:
+        verbose_name = 'Профиль',
+        verbose_name_plural ='Профили',

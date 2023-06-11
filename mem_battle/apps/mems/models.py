@@ -1,5 +1,6 @@
-import uuid
 import random
+import uuid
+
 # from numpy import random
 from django.conf import settings
 from django.db import models
@@ -91,7 +92,6 @@ class MemBattleManager(models.Manager):
     def random(self):
         count = self.values_list('id', flat=True)
         rand = random.choices(count, k=2)
-        print(rand)
         return self.select_related('owner').filter(pk__in=rand)
 
 

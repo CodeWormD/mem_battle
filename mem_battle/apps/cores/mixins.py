@@ -85,6 +85,27 @@ class TagModelViewSet(mixins.RetrieveModelMixin,
     pass
 
 
+class UserFollowAPIView(mixins.CreateModelMixin,
+                        mixins.RetrieveModelMixin,
+                        mixins.ListModelMixin,
+                        mixins.DestroyModelMixin,
+                        generics.GenericAPIView):
+    def post(self, request, *args, **kwargs):
+        return self.create(request, *args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        return self.destroy(request, *args, **kwargs)
+
+
+class ProfileUserMemsAPIView(mixins.ListModelMixin,
+                        generics.GenericAPIView):
+
+    def get(self, request, *args, **kwargs):
+        return self.list(request, *args, **kwargs)
+
 class CommentCreateUpdateDestroyAPIView(mixins.CreateModelMixin,
                                         mixins.UpdateModelMixin,
                                         mixins.DestroyModelMixin,

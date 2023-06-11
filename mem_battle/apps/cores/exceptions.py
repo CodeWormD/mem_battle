@@ -51,7 +51,26 @@ class QuersetBattleError(APIException):
     default_detail = ('QuersetBattleError. Smth wrong with mem battle get_queryset')
     default_code = 'not_found'
 
+
 class QuerysetError(APIException):
     status_code = status.HTTP_204_NO_CONTENT
     default_detail = ('QuerySetError in get_random_mems or maybe you have seen all mems')
+    default_code = 'no_content'
+
+
+class ProfileNotExistsError(APIException):
+    status_code = status.HTTP_404_NOT_FOUND
+    default_detail = ('There is not such profile')
+    default_code = 'not_found'
+
+
+class FollowyourselfError(APIException):
+    status_code = status.HTTP_204_NO_CONTENT
+    default_detail = ('You can not follow yourself')
+    default_code = 'no_content'
+
+
+class FollowerDuplicationError(APIException):
+    status_code = status.HTTP_204_NO_CONTENT
+    default_detail = ('You can not follow twice one person')
     default_code = 'no_content'

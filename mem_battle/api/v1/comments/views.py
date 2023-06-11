@@ -5,9 +5,8 @@ from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 
-from apps.cores.exceptions import (CommentDoesNotExist,
-                                   CommentListDoesNotExists, MemDoesNotExist,
-                                   CommentHasBeenDeleted)
+from apps.cores.exceptions import (CommentDoesNotExist, CommentHasBeenDeleted,
+                                   CommentListDoesNotExists, MemDoesNotExist)
 from apps.cores.mixins import (CommentCreateUpdateDestroyAPIView,
                                CommentListCreateAPIView, LikeDislikeAPIView)
 from apps.cores.permissions import IsOwnerOrReadOnly

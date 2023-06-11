@@ -9,7 +9,6 @@ class CommentSerializer(serializers.ModelSerializer):
         read_only=True,
         slug_field="username"
     )
-    #     comments  = CommentMemSerializer(read_only=True, many=True),
 
     class Meta:
         model = Comment
@@ -96,8 +95,9 @@ class TagSerializer(serializers.ModelSerializer):
 
 
 class MemCreateUpdateSerializer(serializers.ModelSerializer):
-    tags = TagSerializer(required=True)
+    tags = TagSerializer(required=False)
     image = serializers.ImageField()
+    # image = serializers.ListField()
     bad_tags = settings.BAD_TAGS
 
     class Meta:
@@ -119,9 +119,12 @@ class MemCreateUpdateSerializer(serializers.ModelSerializer):
             return t
 
     def create(self, validated_data):
+
         tags = validated_data.pop('tags')
         list_tags = self.make_tags_list(tags)
         mem = Mem.objects.create(**validated_data)
+        #проходимся по списку картинок, в каждую картинку добавляем теги
+        #validate len of list of images
         for tag in list_tags:
             t = self.get_or_create_tag(tag)
             mem.tags.add(t)

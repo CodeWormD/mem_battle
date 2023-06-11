@@ -1,11 +1,12 @@
 from django.urls import include, path, re_path
 from rest_framework.routers import DefaultRouter
 
+from .battle import views as battle_view
 from .comments import views
 from .groups import views as group_view
 from .mems import views as mem_view
 from .tags import views as tag_view
-from .battle import views as battle_view
+from .users import views as user_view
 
 router = DefaultRouter()
 router.register('mems', mem_view.MemsViewSet, basename='mems')
@@ -30,4 +31,11 @@ urlpatterns = [
          views.CommentLikeAPIView.as_view()),
     path('v1/mems/<uuid:mem_id>/comments/<uuid:comment_id>/dislike/',
          views.CommentDisLikeAPIView.as_view()),
+
+    path('v1/profile/<uuid:profile_id>/',
+         user_view.UserProfileFollowingMVS.as_view()),
+    path('v1/profile/<uuid:profile_id>/mems/',
+         user_view.ProfileMemsAPIView.as_view()),
+
+
 ]

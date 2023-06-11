@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Follower, Social, User
+from .models import Follower, Profile, Social, User
 
 
 @admin.register(User)
@@ -41,3 +41,7 @@ class SocialAdmin(admin.ModelAdmin):
 @admin.register(Follower)
 class FollowerAdmin(admin.ModelAdmin):
     list_display = ("sender", "receiver",)
+
+@admin.register(Profile)
+class ProfileAdmin(admin.ModelAdmin):
+    list_display = ('id', "owner",)

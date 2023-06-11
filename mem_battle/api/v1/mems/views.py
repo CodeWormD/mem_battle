@@ -1,7 +1,8 @@
 from django.db.models import Count, Prefetch
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import status
-from rest_framework.filters import SearchFilter, OrderingFilter
+from rest_framework.decorators import action
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -22,7 +23,7 @@ class MemsViewSet(MemModelViewSet):
     pagination_class = PageNumberPagination
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     filterset_class = MemFilter
-    search_fields = ['^tags__name']
+    search_fields = ['^tags__name', 'owner__username']
     ordering_fields = ['created_at', 'likes_count', 'vote_score']
 
     action_serializer_classes = {
@@ -52,7 +53,7 @@ class MemsViewSet(MemModelViewSet):
         return queryset
 
     def get_object(self):
-        queryset = (
+        instance = (
             Mem.objects
             .select_related('owner')
             .only('owner__username', 'image', 'id', 'created_at')
@@ -71,7 +72,7 @@ class MemsViewSet(MemModelViewSet):
                     .only('id', 'name')),
             ).get(id=self.kwargs['pk'])
         )
-        return queryset
+        return instance
 
     def list(self, request):
         try:
@@ -83,6 +84,17 @@ class MemsViewSet(MemModelViewSet):
             serializer = self.get_serializer_class()(page, many=True)
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer_class()(queryset, many=True)
+        return Response(serializer.data)
+
+    @action(detail=False,
+            methods=["get"],
+            url_path="user-mems",
+            url_name="user-mems",
+            permission_classes=[IsAuthenticated]
+    )
+    def own_user_list(self, request):
+        queryset = self.filter_queryset(self.get_queryset().filter(owner=request.user))
+        serializer = MemsListSerializer(queryset, many=True)
         return Response(serializer.data)
 
     def create(self, request, *args, **kwargs):

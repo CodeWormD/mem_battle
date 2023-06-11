@@ -1,15 +1,18 @@
 import random
+
+from django.db.models import Count
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.viewsets import ReadOnlyModelViewSet
-from rest_framework.permissions import AllowAny
-from rest_framework.pagination import PageNumberPagination
 
 from apps.cores.exceptions import (BattleForMemsEnd, QuersetBattleError,
                                    QuerysetError)
 from apps.mems.models import Mem
+
 from .serializers import MemsBattleListSerializer
-from django.db.models import Count
+
 
 class MemBattleViewSet(ReadOnlyModelViewSet):
     serializer_class = MemsBattleListSerializer
