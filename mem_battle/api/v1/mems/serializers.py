@@ -2,6 +2,7 @@ from django.conf import settings
 from rest_framework import serializers
 
 from apps.mems.models import Comment, Mem, Tag
+from apps.cores.exceptions import (MoreThan10Mems,)
 
 
 class CommentSerializer(serializers.ModelSerializer):
@@ -96,8 +97,7 @@ class TagSerializer(serializers.ModelSerializer):
 
 class MemCreateUpdateSerializer(serializers.ModelSerializer):
     tags = TagSerializer(required=False)
-    image = serializers.ImageField()
-    # image = serializers.ListField()
+    image = serializers.ListField(child=serializers.ImageField(), write_only=True)
     bad_tags = settings.BAD_TAGS
 
     class Meta:
@@ -118,26 +118,35 @@ class MemCreateUpdateSerializer(serializers.ModelSerializer):
             t = Tag.objects.get(name=tag)
             return t
 
-    def create(self, validated_data):
+    def add_tags_list_to_self(self, validated_data):
+        tags = validated_data['tags']
+        setattr(self, 'list_tags', self.make_tags_list(tags))
 
-        tags = validated_data.pop('tags')
-        list_tags = self.make_tags_list(tags)
-        mem = Mem.objects.create(**validated_data)
-        #проходимся по списку картинок, в каждую картинку добавляем теги
-        #validate len of list of images
-        for tag in list_tags:
-            t = self.get_or_create_tag(tag)
-            mem.tags.add(t)
+    def add_tag_to_mem_instance(self, mem):
+        [mem.tags.add(self.get_or_create_tag(tag)) for tag in self.list_tags]
+
+    def create(self, validated_data):
+        images = validated_data['image']
+        if len(images) > 10:
+            raise MoreThan10Mems
+        if 'tags' in validated_data:
+            self.add_tags_list_to_self(validated_data=validated_data)
+        for image in images:
+            mem = Mem.objects.create(
+                owner=validated_data['owner'],
+                image=image
+            )
+            if hasattr(self, 'list_tags'):
+                self.add_tag_to_mem_instance(mem)
         return mem
 
     def update(self, instance, validated_data):
-        tags = validated_data.pop('tags')
-        list_tags = self.make_tags_list(tags)
+        if 'tags' in validated_data:
+            self.add_tags_list_to_self(validated_data=validated_data)
         instance.tags.clear()
         instance.save()
-        for tag in list_tags:
-            t = self.get_or_create_tag(tag)
-            instance.tags.add(t)
+        if hasattr(self, 'list_tags'):
+            self.add_tag_to_mem_instance(instance)
         return instance
 
 

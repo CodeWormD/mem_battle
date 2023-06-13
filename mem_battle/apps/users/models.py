@@ -65,6 +65,8 @@ class User(AbstractUser, TimestampsBaseMixin):
     )
 
     objects = UserManager()
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
 
     class Mets:
         db_table = 'User',

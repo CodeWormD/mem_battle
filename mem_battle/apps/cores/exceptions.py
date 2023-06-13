@@ -24,6 +24,12 @@ class MemListError(MemDoesNotExist):
     default_detail = ('Can not get list of mems')
 
 
+class MoreThan10Mems(APIException):
+    status_code = status.HTTP_403_FORBIDDEN
+    default_detail = ('Please, upload not more than 10 mems')
+    default_code = 'forbidden'
+
+
 class CommentDoesNotExist(MemDoesNotExist):
     default_detail = ('Comment does not exist.')
 
@@ -38,6 +44,17 @@ class CommentHasBeenDeleted(CommentDoesNotExist):
 
 class TagDoesNotExist(CommentDoesNotExist):
     default_detail = ('Tag does not exist.')
+
+
+class NoTagField(APIException):
+    status_code = status.HTTP_204_NO_CONTENT
+    default_detail = ('No tag field in validated data')
+    default_code = 'no_content'
+
+
+class NoListOfTags(NoTagField):
+    default_detail = ('There is no tag in list')
+    default_code = 'no_content'
 
 
 class BattleForMemsEnd(APIException):

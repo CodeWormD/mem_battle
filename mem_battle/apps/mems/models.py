@@ -64,10 +64,8 @@ class Group(models.Model):
 class Tag(models.Model):
     name = models.CharField(
         max_length=70,
-        unique=True
     )
     slug = models.SlugField(
-        unique=True,
         db_index=True,
         max_length=70
     )
