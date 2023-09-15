@@ -89,6 +89,14 @@ DATABASES = {
 }
 
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://username:password@127.0.0.1:6379",
+    }
+}
+
+
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -175,3 +183,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 BAD_TAGS = ['.', '', '!', '*']
 AUTH_USER_MODEL = 'users.User'
+
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+# CELERY_RESULT_BACKEND='redis://127.0.0.1:6379/0'
